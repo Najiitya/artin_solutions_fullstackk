@@ -43,5 +43,14 @@ class TodoController extends Controller
         return response()->json($todo, 201);
     }
 
+    public function show(Todo $todo)
+    {
+        if ($todo->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return response()->json($todo);
+    }
+
     
 }
