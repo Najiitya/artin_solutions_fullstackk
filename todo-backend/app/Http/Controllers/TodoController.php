@@ -8,5 +8,5 @@ use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
-    //
+    
 }
