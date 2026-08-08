@@ -17,12 +17,16 @@ export default function RegisterPage() {
         setError('');
         
         try {
-            const response = await api.post('/register', { name, email, password });
-            // The backend returns the token on successful registration
-            // We need to fetch the user details to complete the login state
+            // Send the password twice to satisfy Laravel's "confirmed" validation rule
+            const response = await api.post('/register', { 
+                name, 
+                email, 
+                password, 
+                password_confirmation: password 
+            });
+            
             const token = response.data.access_token;
             
-            // Temporarily set token to fetch user data
             localStorage.setItem('access_token', token);
             const userResponse = await api.get('/user', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -30,7 +34,7 @@ export default function RegisterPage() {
             
             login(token, userResponse.data);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to register. Ensure email is unique and password is at least 8 characters.');
+            setError(err.response?.data?.message || 'Failed to register.');
         }
     };
 
