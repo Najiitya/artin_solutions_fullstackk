@@ -69,4 +69,15 @@ class TodoController extends Controller
 
         return response()->json($todo);
     }
+
+    public function destroy(Todo $todo)
+    {
+        if ($todo->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $todo->delete();
+
+        return response()->json(['message' => 'Todo deleted successfully']);
+    }
 }
