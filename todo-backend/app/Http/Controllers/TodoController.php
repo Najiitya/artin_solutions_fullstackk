@@ -52,5 +52,21 @@ class TodoController extends Controller
         return response()->json($todo);
     }
 
-    
+    public function update(Request $request, Todo $todo)
+    {
+        // Security check: Ensure the user owns this todo
+        if ($todo->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'is_completed' => 'sometimes|boolean',
+        ]);
+
+        $todo->update($validated);
+
+        return response()->json($todo);
+    }
 }
