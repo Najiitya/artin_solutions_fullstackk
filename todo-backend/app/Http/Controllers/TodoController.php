@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         $query = Todo::where('user_id', Auth::id());
 
         if ($request->has('search')) {
@@ -18,5 +18,12 @@ class TodoController extends Controller
                   ->orWhere('description', 'ilike', "%{$search}%");
             });
         }
+
+        if ($request->has('status')) {
+            $isCompleted = $request->query('status') === 'completed' ? true : false;
+            $query->where('is_completed', $isCompleted);
+        }
+
+        return response()->json($query->latest()->get());
     }
 }
