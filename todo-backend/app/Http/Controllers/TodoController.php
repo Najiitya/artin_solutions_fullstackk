@@ -26,4 +26,22 @@ class TodoController extends Controller
 
         return response()->json($query->latest()->get());
     }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $todo = Auth::user()->todos()->create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'is_completed' => false, // Default to pending
+        ]);
+
+        return response()->json($todo, 201);
+    }
+
+    
 }
